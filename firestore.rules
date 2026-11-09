@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function myProfile() { return get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data; }
+    function isUser() { return signedIn() && myProfile().role == 'user'; }
+    function isCaretaker() { return signedIn() && myProfile().role == 'caretaker'; }
+    function activeLink(userUid, caretakerUid) {
+      return exists(/databases/$(database)/documents/caretakerLinks/$(userUid + '_' + caretakerUid))
+        && get(/databases/$(database)/documents/caretakerLinks/$(userUid + '_' + caretakerUid)).data.status == 'active';
+    }
+
+    match /profiles/{uid} {
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.role in ['user', 'caretaker'];
+      allow get: if signedIn() && (request.auth.uid == uid
+        || (resource.data.role == 'user' && activeLink(uid, request.auth.uid))
+        || (resource.data.role == 'caretaker' && activeLink(request.auth.uid, uid)));
+      allow list: if false;
+      allow update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.email == resource.data.email;
+      allow delete: if false;
+    }
+
+    match /userData/{uid} {
+      allow create, update, delete: if signedIn() && request.auth.uid == uid && isUser();
+      allow get: if signedIn() && (request.auth.uid == uid || activeLink(uid, request.auth.uid));
+      allow list: if false;
+    }
+
+    match /invites/{code} {
+      allow create: if signedIn() && isUser()
+        && request.resource.data.userUid == request.auth.uid
+        && request.resource.data.acceptedBy == null
+        && request.resource.data.expiresAt is timestamp
+        && request.resource.data.expiresAt > request.time;
+      allow get: if signedIn() && (resource.data.userUid == request.auth.uid
+        || (isCaretaker() && resource.data.acceptedBy == null && resource.data.expiresAt > request.time));
+      allow list: if false;
+      allow update: if signedIn() && isCaretaker()
+        && resource.data.acceptedBy == null
+        && resource.data.expiresAt > request.time
+        && request.resource.data.userUid == resource.data.userUid
+        && request.resource.data.acceptedBy == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['acceptedBy']);
+      allow delete: if signedIn() && isUser() && resource.data.userUid == request.auth.uid;
+    }
+
+    match /caretakerLinks/{linkId} {
+      allow create: if signedIn() && isCaretaker()
+        && request.resource.data.caretakerUid == request.auth.uid
+        && request.resource.data.status == 'active'
+        && request.resource.data.userUid is string
+        && request.resource.data.inviteId is string
+        && exists(/databases/$(database)/documents/invites/$(request.resource.data.inviteId))
+        && get(/databases/$(database)/documents/invites/$(request.resource.data.inviteId)).data.userUid == request.resource.data.userUid
+        && get(/databases/$(database)/documents/invites/$(request.resource.data.inviteId)).data.acceptedBy == request.auth.uid;
+      allow get, list: if signedIn() && (resource.data.userUid == request.auth.uid || resource.data.caretakerUid == request.auth.uid);
+      allow update: if false;
+      allow delete: if signedIn() && (resource.data.userUid == request.auth.uid || resource.data.caretakerUid == request.auth.uid);
+    }
+  }
+}

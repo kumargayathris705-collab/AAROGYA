@@ -1,0 +1,727 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AAROGYA — Care today. Thrive tomorrow.</title>
+<meta name="theme-color" content="#FFF3E2">
+<meta name="description" content="AAROGYA — Care today. Thrive tomorrow.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="AAROGYA">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{--bg:#FFF3E2;--surface:#fffaf2;--ink:#222222;--muted:#766b60;--line:#f0dfc8;--accent:#FBAB57;--accent-2:#FEC674;--on-accent:#222222;--ok:#347a50;--ok-bg:#e7f3e9;--err:#b42318;color-scheme:light}
+*{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 'DM Sans',system-ui,sans-serif;min-height:100vh}
+main{max-width:560px;margin:0 auto;padding:24px 18px calc(34px + env(safe-area-inset-bottom,0px))}
+h1{font-size:29px;line-height:1.12;letter-spacing:-1px;margin:0 0 5px;font-weight:800}
+h2{font-size:18px;letter-spacing:-.3px;margin:25px 0 11px;font-weight:800}
+.sub{color:var(--muted);margin:0 0 14px}
+.card{background:var(--surface);border:1px solid rgba(34,34,34,.045);border-radius:20px;padding:17px;margin-bottom:13px;box-shadow:0 7px 22px rgba(91,61,28,.055)}
+form{display:grid;gap:18px}
+label{display:grid;gap:8px;font-weight:700}
+input[type=text],input[type=password],input[type=email]{font:inherit;min-height:54px;padding:0 15px;border:2px solid var(--line);border-radius:17px;background:#fff;color:var(--ink);width:100%}
+button{font:inherit;min-height:47px;border-radius:14px;border:1px solid var(--accent);background:var(--accent);color:var(--on-accent);padding:0 17px;cursor:pointer;font-weight:800;transition:transform .15s,filter .15s}
+button:active{transform:scale(.98)}
+button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+button.small{min-height:37px;padding:0 12px;border-radius:11px}
+button.danger{background:transparent;color:var(--err);border-color:#e9b8b3}
+button:disabled{opacity:.5;cursor:default}
+:focus-visible{outline:3px solid #d47b2c;outline-offset:2px}
+.err{color:var(--err);min-height:1.5em;margin:0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:3px 0 23px}
+.top h1{font-size:25px}
+.tabs{position:fixed;z-index:10;bottom:0;left:50%;transform:translateX(-50%);width:min(560px,100%);display:flex;gap:4px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));margin:0;background:var(--accent);border-radius:22px 22px 0 0;box-shadow:0 -7px 25px rgba(91,61,28,.12)}
+.tabs button{flex:1;min-width:0;min-height:48px;padding:5px 3px;background:transparent;color:#49311d;border:0;border-radius:13px;font-size:11px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1px}
+.tabs button:before{font-size:17px;line-height:1.2;font-weight:400}
+#tab-today:before{content:'⌂'}#tab-meds:before{content:'＋'}#tab-hist:before{content:'▤'}#tab-mon:before{content:'♡'}
+.tabs button[aria-selected=true]{background:#fff3e2;color:#222;box-shadow:0 3px 10px rgba(91,61,28,.1)}
+.slots{display:flex;flex-wrap:wrap;gap:8px}
+.slots label{display:flex;align-items:center;gap:8px;font-weight:600;border:1px solid var(--line);border-radius:12px;padding:8px 12px;min-height:44px;background:#fffaf2}
+input[type=checkbox],input[type=radio]{width:21px;height:21px;accent-color:#d98232}
+.row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row .grow{flex:1;min-width:0;overflow-wrap:anywhere}
+.row .grow span{display:block;color:var(--muted);font-size:13px}
+.tick{display:flex;align-items:center;gap:12px;width:100%;cursor:pointer}
+.empty{color:var(--muted);padding:18px;border:1px dashed #e7cda9;border-radius:16px;background:rgba(255,250,242,.65)}
+.banner{background:var(--ok-bg);color:var(--ok);border-radius:14px;padding:13px 15px;margin-bottom:12px;font-weight:700}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+#auth{padding-top:28px}
+#auth>h1{display:block;font-size:clamp(36px,9vw,48px);letter-spacing:-1.8px;margin:0 0 18px;font-weight:800}
+#auth>h1:before{content:'✦';display:block;color:#e99543;font-size:30px;line-height:1;margin:0 0 30px 2px}
+#auth>.sub{text-align:left;font-size:clamp(18px,4.7vw,23px);margin:0 0 32px;line-height:1.35}
+#auth .card{margin-top:0;padding:25px 22px 26px;border-radius:28px;background:#fffaf3;box-shadow:0 12px 35px rgba(91,61,28,.055)}
+#auth form{gap:19px}
+#auth fieldset legend{font-size:18px;margin:0 0 10px}
+#auth .slots{gap:10px;flex-wrap:nowrap}
+#auth .slots label{flex:1;justify-content:center;white-space:nowrap;gap:9px;min-height:56px;padding:8px 10px;border:2px solid var(--line);border-radius:18px;background:transparent;font-size:16px}
+#auth input[type=radio]{width:22px;height:22px;flex:0 0 22px}
+#auth label{font-size:18px;gap:8px}
+#auth input[type=text],#auth input[type=password],#auth input[type=email]{min-height:58px;border-radius:18px}
+#auth button{min-height:64px;border-radius:19px;font-size:18px}
+#auth #signIn{margin-top:28px}
+#auth #signUp{margin-top:-7px}
+#auth #forgotPassword{
+  justify-self:end;
+  min-height:auto;
+  margin-top:-12px;
+  padding:2px 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:#a95f20;
+  font-size:14px;
+  font-weight:700;
+  text-decoration:underline;
+}
+#auth #forgotPassword:disabled{opacity:.5}
+#syncNote{font-size:15px;line-height:1.55;margin:18px 0 0}
+#app .top .sub{font-size:13px}
+#who{max-width:280px;overflow-wrap:anywhere}
+#v-today>p:first-child{font-size:13px;font-weight:700;letter-spacing:.3px}
+#submitDay{width:100%;margin-top:8px}
+[hidden]{display:none!important}
+@media(min-width:700px){main{padding-top:36px}.tabs{bottom:18px;border-radius:18px;padding:8px}.tabs button{font-size:12px}}
+@media(max-width:380px){#auth .slots label{font-size:14px;padding:8px 6px}#auth .card{padding:22px 17px}}
+
+/* Single-screen responsive layout */
+html,body{height:100%;height:100dvh;overflow:hidden}
+body{min-height:0}
+main{
+  height:100%;height:100dvh;max-width:560px;margin:0 auto;
+  padding:clamp(10px,2.2vh,20px) 16px calc(82px + env(safe-area-inset-bottom,0px));
+  overflow:hidden;display:flex;flex-direction:column;min-height:0
+}
+#loading{flex:1}
+#auth{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:clamp(8px,2vh,20px) 0 16px}
+#auth>h1{font-size:clamp(30px,7vw,40px);margin-bottom:6px}
+#auth>h1:before{font-size:25px;margin-bottom:10px}
+#auth>.sub{font-size:clamp(15px,3.8vw,18px);margin-bottom:14px}
+#auth .card{padding:clamp(14px,3vh,22px) 18px;border-radius:22px}
+#auth form{gap:clamp(9px,1.7vh,14px)}
+#auth label{font-size:15px;gap:5px}
+#auth input[type=text],#auth input[type=password],#auth input[type=email]{min-height:46px;border-radius:13px}
+#auth .slots label{min-height:43px;font-size:14px;border-radius:13px}
+#auth input[type=radio]{width:18px;height:18px;flex-basis:18px}
+#auth button{min-height:48px;border-radius:14px;font-size:15px}
+#auth #signIn{margin-top:5px}
+#auth #signUp{margin-top:-4px}
+#auth #forgotPassword{margin-top:-5px;font-size:13px}
+#syncNote{font-size:12px;margin-top:10px}
+#app{display:flex;flex:1;min-height:0;flex-direction:column;overflow:hidden;padding-bottom:0}
+#app .top{flex:0 0 auto;margin:0 0 10px}
+#app .top h1{font-size:22px}
+#app .tabs{position:static;transform:none;left:auto;bottom:auto;width:100%;flex:0 0 auto;
+  padding:5px 6px;margin:0 0 10px;border-radius:15px;box-shadow:0 3px 12px rgba(91,61,28,.08)}
+#app .tabs button{min-height:42px;font-size:10px}
+#app .tabs button:before{font-size:15px}
+#v-today,#v-meds,#v-hist,#v-mon{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-bottom:8px}
+#app h2{margin:14px 0 8px;font-size:16px}
+#app .card{padding:12px;margin-bottom:9px;border-radius:16px}
+#app form{gap:11px}
+#app input[type=text],#app input[type=password],#app input[type=email]{min-height:44px}
+#app .row{padding:8px 0;gap:8px}
+#app .banner{padding:9px 11px;margin-bottom:9px}
+#app .empty{padding:13px}
+#submitDay{min-height:44px}
+@media(min-width:700px){
+  main{padding-top:18px}
+  #app .tabs{position:static;bottom:auto;border-radius:15px}
+}
+@media(max-height:650px){
+  #auth{padding-top:3px}
+  #auth>h1:before{display:none}
+  #auth .card{padding:12px 16px}
+  #auth form{gap:7px}
+  #auth input[type=text],#auth input[type=password],#auth input[type=email]{min-height:40px}
+  #auth button{min-height:42px}
+  #syncNote{margin-top:6px}
+}
+
+</style>
+</head>
+
+<body>
+<main>
+<p class="sub" id="loading">Loading…</p>
+
+<!-- SIGN IN -->
+<section id="auth" hidden>
+  <h1>AAROGYA</h1>
+  <p class="sub">Care today. Thrive tomorrow.</p>
+
+  <div class="card">
+    <form id="authForm" autocomplete="on">
+      <fieldset style="border:0;padding:0;margin:0">
+        <legend style="font-weight:700;margin-bottom:6px">Continue as</legend>
+        <div class="slots">
+          <label><input type="radio" name="role" value="user" checked> User</label>
+          <label><input type="radio" name="role" value="caretaker"> Caretaker</label>
+        </div>
+      </fieldset>
+
+      <label id="nameWrap" hidden>
+        Display name
+        <input type="text" id="displayName" autocomplete="name" maxlength="60">
+      </label>
+
+      <label>
+        Email address
+        <input type="email" id="email" autocomplete="email" required maxlength="254">
+      </label>
+
+      <label>
+        Password
+        <input type="password" id="password" autocomplete="current-password" required minlength="8" maxlength="128">
+      </label>
+
+      <button type="button" id="forgotPassword">Forgot Password?</button>
+
+      <p class="err" id="authErr" role="alert"></p>
+      <button type="submit" id="signIn">Sign in</button>
+      <button type="button" class="ghost" id="signUp">Create account</button>
+    </form>
+  </div>
+
+  <p class="sub" id="syncNote"></p>
+</section>
+
+<!-- APP -->
+<section id="app" hidden>
+  <div class="top">
+    <div>
+      <h1>AAROGYA</h1>
+      <div class="sub" id="who" style="margin:0"></div>
+    </div>
+    <button class="ghost small" id="out">Sign out</button>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-today" aria-selected="true">Home</button>
+    <button role="tab" id="tab-meds" aria-selected="false">Meds</button>
+    <button role="tab" id="tab-hist" aria-selected="false">Journey</button>
+    <button role="tab" id="tab-mon" aria-selected="false">Care</button>
+  </div>
+
+  <div id="v-today"></div>
+  <div id="v-meds" hidden>
+    <div class="card">
+      <form id="medForm">
+        <b id="formTitle">Add a medication</b>
+        <label>Tablet name<input type="text" id="mName" required maxlength="60" placeholder="e.g. Metformin"></label>
+        <label>Dose (optional)<input type="text" id="mDose" maxlength="40" placeholder="e.g. 500 mg"></label>
+        <fieldset style="border:0;padding:0;margin:0">
+          <legend style="font-weight:700;margin-bottom:6px">When to take it</legend>
+          <div class="slots">
+            <label><input type="checkbox" name="slot" value="Morning"> Morning</label>
+            <label><input type="checkbox" name="slot" value="Noon"> Noon</label>
+            <label><input type="checkbox" name="slot" value="Night"> Night</label>
+          </div>
+        </fieldset>
+        <p class="err" id="medErr" role="alert"></p>
+        <div class="actions">
+          <button type="submit" id="saveMed">Add medication</button>
+          <button type="button" class="ghost" id="cancelEdit" hidden>Cancel edit</button>
+        </div>
+      </form>
+    </div>
+    <h2>My medications</h2>
+    <div id="medList"></div>
+  </div>
+
+  <div id="v-mon" hidden></div>
+
+  <div id="v-hist" hidden>
+    <div class="actions" style="margin-bottom:12px">
+      <button id="dl">Download records (CSV)</button>
+    </div>
+    <p class="err" id="dlMsg" role="status" style="color:var(--muted)"></p>
+    <div id="histList"></div>
+  </div>
+</section>
+</main>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, getDocs, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js';
+
+const firebaseConfig={
+  apiKey:'AIzaSyDyXAmHvPiHTZivHfU4xU--UwSs5i3tGBo',
+  authDomain:'aarogya-46b1d.firebaseapp.com',
+  projectId:'aarogya-46b1d',
+  storageBucket:'aarogya-46b1d.firebasestorage.app',
+  messagingSenderId:'29053590673',
+  appId:'1:29053590673:web:a41103d211de7aa9107330'
+};
+
+const app=initializeApp(firebaseConfig),authClient=getAuth(app),db=getFirestore(app);
+const $=id=>document.getElementById(id),SLOTS=['Morning','Noon','Night'];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dayKey=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const nice=k=>{const [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',year:'numeric'})};
+const blank=()=>({meds:[],drafts:{},records:{}});
+
+let me=null,profile=null,data=blank(),role='user',selectedUser=null,stopData=null,stopLinks=null,links=[];
+const profileRef=u=>doc(db,'profiles',u),dataRef=u=>doc(db,'userData',u);
+
+function setBusy(v){$('signIn').disabled=v;$('signUp').disabled=v}
+
+let createMode=false;
+
+function setAuthMode(create){
+  createMode=create;
+  $('nameWrap').hidden=!create;
+  $('displayName').required=create;
+  $('forgotPassword').hidden=create;
+  $('signIn').textContent=create?'Create account':'Sign in';
+  $('signUp').textContent=create?'Back to sign in':'Create account';
+  $('password').autocomplete=create?'new-password':'current-password';
+  $('authErr').textContent='';
+}
+
+function showAuth(message=''){
+  if(stopData){stopData();stopData=null}
+  if(stopLinks){stopLinks();stopLinks=null}
+  if(stopSelected){stopSelected();stopSelected=null}
+  me=null;
+  profile=null;
+  selectedUser=null;
+  setAuthMode(false);
+  $('loading').hidden=true;
+  $('app').hidden=true;
+  $('auth').hidden=false;
+  $('authErr').textContent=message;
+  $('syncNote').textContent='Your account and authorised care links sync through Firebase.';
+  $('password').value='';
+}
+
+function showApp(){
+  $('loading').hidden=true;
+  $('auth').hidden=true;
+  $('app').hidden=false;
+  $('who').textContent=(profile.name||profile.email)+' · '+(role==='user'?'User':'Caretaker');
+  tab('today');
+}
+
+function setData(v){data=Object.assign(blank(),v||{});refresh()}
+
+async function persist(){
+  if(role!=='user'||!me)return;
+  try{
+    await setDoc(dataRef(me),data);
+    $('syncNote').textContent='Synced.';
+  }catch(e){
+    $('syncNote').textContent='Sync failed. Your latest change may not be saved online. Check your connection.';
+    console.error(e);
+  }
+}
+
+async function auth(create){
+  setBusy(true);
+  $('authErr').textContent='';
+  try{
+    const email=$('email').value.trim().toLowerCase(),password=$('password').value;
+    if(create){
+      const name=$('displayName').value.trim();
+      if(!name)throw Error('Enter the display name for this account.');
+      const cred=await createUserWithEmailAndPassword(authClient,email,password);
+      const r=document.querySelector('input[name=role]:checked').value;
+      await setDoc(profileRef(cred.user.uid),{uid:cred.user.uid,name,email,role:r,createdAt:serverTimestamp()});
+    }else{
+      await signInWithEmailAndPassword(authClient,email,password);
+    }
+  }catch(e){
+    $('authErr').textContent=authMessage(e);
+  }finally{
+    setBusy(false);
+  }
+}
+
+async function resetPassword(){
+  $('authErr').textContent='';
+  const email=$('email').value.trim().toLowerCase();
+
+  if(!email){
+    $('authErr').textContent='Enter your email address first.';
+    $('email').focus();
+    return;
+  }
+
+  if(!$('email').checkValidity()){
+    $('authErr').textContent='Enter a valid email address.';
+    $('email').focus();
+    return;
+  }
+
+  $('forgotPassword').disabled=true;
+  $('forgotPassword').textContent='Sending…';
+
+  try{
+    await sendPasswordResetEmail(authClient,email);
+    $('authErr').style.color='var(--ok)';
+    $('authErr').textContent='If an account exists for this email, a password-reset link will be sent. Please check your inbox and spam folder.';
+  }catch(e){
+    $('authErr').style.color='var(--err)';
+    $('authErr').textContent=authMessage(e);
+  }finally{
+    $('forgotPassword').disabled=false;
+    $('forgotPassword').textContent='Forgot Password?';
+  }
+}
+
+function authMessage(e){
+  const c=e?.code||'';
+  return ({
+    'auth/email-already-in-use':'This email already has an account. Sign in instead.',
+    'auth/invalid-credential':'Email or password is incorrect.',
+    'auth/weak-password':'Use a password with at least 8 characters.',
+    'auth/invalid-email':'Enter a valid email address.',
+    'auth/network-request-failed':'Network issue. Check your internet connection and try again.',
+    'auth/too-many-requests':'Too many attempts. Wait a little and try again.'
+  })[c]||e.message||'Something went wrong. Please try again.';
+}
+
+$('authForm').onsubmit=e=>{
+  e.preventDefault();
+  auth(createMode);
+};
+
+$('forgotPassword').onclick=resetPassword;
+
+$('signUp').onclick=()=>{
+  setAuthMode(!createMode);
+};
+
+document.querySelectorAll('input[name=role]').forEach(r=>{
+  r.onchange=()=>setAuthMode(false);
+});
+
+$('out').onclick=()=>signOut(authClient);
+
+onAuthStateChanged(authClient,async u=>{
+  if(!u){showAuth();return}
+  try{
+    let snap=await getDoc(profileRef(u.uid));
+    if(!snap.exists()){
+      await new Promise(r=>setTimeout(r,900));
+      snap=await getDoc(profileRef(u.uid));
+    }
+    if(!snap.exists())throw Error('Profile missing. Please sign out and try again.');
+    me=u.uid;
+    profile=snap.data();
+    role=profile.role;
+    if(!['user','caretaker'].includes(role))throw Error('Invalid account role.');
+    if(role==='user'){
+      const d=await getDoc(dataRef(me));
+      data=d.exists()?Object.assign(blank(),d.data()):blank();
+      if(!d.exists())await setDoc(dataRef(me),data);
+      showApp();
+      stopData=onSnapshot(dataRef(me),s=>{
+        if(s.exists())setData(s.data());
+      },e=>console.error(e));
+    }else{
+      links=[];
+      showApp();
+      watchLinks();
+    }
+  }catch(e){
+    showAuth(e.message);
+    await signOut(authClient);
+  }
+});
+
+function watchLinks(){
+  if(stopLinks)stopLinks();
+  const q=query(collection(db,'caretakerLinks'),where('caretakerUid','==',me),where('status','==','active'));
+  stopLinks=onSnapshot(q,async s=>{
+    const rows=[];
+    for(const x of s.docs){
+      const d=x.data();
+      try{
+        const p=await getDoc(profileRef(d.userUid));
+        if(p.exists())rows.push({uid:d.userUid,name:p.data().name||p.data().email});
+      }catch{}
+    }
+    links=rows;
+    if(!selectedUser&&rows.length)selectedUser=rows[0].uid;
+    if(selectedUser&&!rows.some(x=>x.uid===selectedUser))selectedUser=rows[0]?.uid||null;
+    renderMon();
+    if(selectedUser)watchSelectedUser();
+    else $('v-today').innerHTML='<div class="empty">No User accounts are linked yet. Ask a User to share an invitation code.</div>';
+  },e=>{$('authErr').textContent=e.message});
+}
+
+let stopSelected=null;
+
+function watchSelectedUser(){
+  if(stopSelected){stopSelected();stopSelected=null}
+  if(!selectedUser)return;
+  stopSelected=onSnapshot(dataRef(selectedUser),s=>{
+    data=s.exists()?Object.assign(blank(),s.data()):blank();
+    refresh();
+  },e=>console.error(e));
+}
+
+function refresh(){
+  const t=['today','meds','hist','mon'].find(k=>!$('v-'+k).hidden);
+  if(t==='today')renderToday();
+  if(t==='meds')renderMeds();
+  if(t==='hist')renderHist();
+  if(t==='mon')renderMon();
+}
+
+function tab(t){
+  const caretaker=role==='caretaker';
+  $('tab-meds').hidden=caretaker;
+  $('tab-mon').hidden=false;
+  for(const k of ['today','meds','hist','mon']){
+    $('v-'+k).hidden=k!==t;
+    $('tab-'+k).setAttribute('aria-selected',k===t);
+  }
+  if(t==='today')renderToday();
+  if(t==='meds')renderMeds();
+  if(t==='hist')renderHist();
+  if(t==='mon')renderMon();
+}
+
+['today','meds','hist','mon'].forEach(k=>$('tab-'+k).onclick=()=>tab(k));
+
+function renderMon(){
+  if(role==='caretaker'){
+    $('v-mon').innerHTML='<div class="card"><b>Linked User accounts</b>'+
+      (links.length?links.map(x=>'<div class="row"><div class="grow">'+esc(x.name)+'</div><button class="small ghost" data-view="'+x.uid+'">View</button></div>').join(''):'<p class="sub">No linked accounts.</p>')+
+      '</div><div class="card"><form id="acceptForm"><b>Connect to a User</b><label>Invitation code<input id="inviteCode" type="text" required minlength="24" maxlength="64" autocomplete="off"></label><p class="err" id="linkErr"></p><button type="submit">Accept invitation</button></form></div>';
+    $('v-mon').querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{
+      selectedUser=b.dataset.view;
+      watchSelectedUser();
+      tab('today');
+    });
+    $('acceptForm').onsubmit=acceptInvite;
+    return;
+  }
+
+  $('v-mon').innerHTML='<div class="card"><b>Authorised Caretakers</b><p class="sub">Create a one-time invitation. Share it only with the Caretaker you want to authorise.</p><button id="makeInvite">Create invitation code</button><p id="inviteResult" style="overflow-wrap:anywhere"></p></div><div class="card"><b>Connected Caretakers</b><div id="caretakerList">Loading…</div></div>';
+  $('makeInvite').onclick=createInvite;
+  loadCaretakers();
+}
+
+async function createInvite(){
+  const code=Array.from(crypto.getRandomValues(new Uint8Array(24)),b=>b.toString(16).padStart(2,'0')).join('');
+  try{
+    await setDoc(doc(db,'invites',code),{
+      userUid:me,
+      createdAt:serverTimestamp(),
+      expiresAt:new Date(Date.now()+86400000),
+      acceptedBy:null
+    });
+    $('inviteResult').textContent='Share this code with your Caretaker (valid for 24 hours): '+code;
+  }catch(e){
+    $('inviteResult').textContent='Could not create invitation. Check your connection and Firestore rules.';
+  }
+}
+
+async function acceptInvite(e){
+  e.preventDefault();
+  const code=$('inviteCode').value.trim(),err=$('linkErr');
+  try{
+    const ir=doc(db,'invites',code),s=await getDoc(ir);
+    if(!s.exists())throw Error('Invitation not found or expired.');
+    const inv=s.data();
+    if(!inv.expiresAt||inv.expiresAt.toMillis()<Date.now()||inv.acceptedBy)throw Error('This invitation has expired or has already been used.');
+    await updateDoc(ir,{acceptedBy:me});
+    const id=inv.userUid+'_'+me;
+    await setDoc(doc(db,'caretakerLinks',id),{
+      userUid:inv.userUid,
+      caretakerUid:me,
+      status:'active',
+      inviteId:code,
+      createdAt:serverTimestamp()
+    });
+    err.textContent='Connected successfully.';
+  }catch(x){
+    err.textContent=x.message||'Could not accept invitation.';
+  }
+}
+
+async function loadCaretakers(){
+  const box=$('caretakerList');
+  try{
+    const q=query(collection(db,'caretakerLinks'),where('userUid','==',me),where('status','==','active')),s=await getDocs(q);
+    if(!s.size){box.textContent='No Caretakers connected yet.';return}
+    box.innerHTML='';
+    for(const x of s.docs){
+      const d=x.data(),p=await getDoc(profileRef(d.caretakerUid));
+      const row=document.createElement('div');
+      row.className='row';
+      row.textContent=p.exists()?p.data().name||p.data().email:'Caretaker';
+      const b=document.createElement('button');
+      b.className='danger small';
+      b.textContent='Remove';
+      b.onclick=async()=>{
+        if(confirm('Remove this Caretaker’s access?')){
+          await deleteDoc(x.ref);
+          loadCaretakers();
+        }
+      };
+      row.appendChild(b);
+      box.appendChild(row);
+    }
+  }catch(e){
+    box.textContent='Could not load Caretakers. Check Firestore rules.';
+  }
+}
+
+function renderToday(){
+  const k=dayKey(),rec=data.records?.[k],rows=[];
+  for(const s of SLOTS)for(const m of (data.meds||[]).filter(m=>m.slots.includes(s)))rows.push({id:m.id,name:m.name,dose:m.dose,slot:s});
+  let h='<p class="sub">'+nice(k)+'</p>';
+
+  if(role==='caretaker'&&!selectedUser){
+    $('v-today').innerHTML='<div class="empty">No linked User selected.</div>';
+    return;
+  }
+
+  if(role==='caretaker')h+='<p class="sub">Viewing: '+esc(links.find(x=>x.uid===selectedUser)?.name||'User')+'</p>';
+
+  if(!data.meds?.length){
+    $('v-today').innerHTML=h+'<div class="empty">No medications have been added yet.</div>';
+    return;
+  }
+
+  if(rec){
+    h+='<div class="banner">Submitted: '+rec.rows.filter(x=>x.taken).length+' of '+rec.rows.length+' doses taken.</div>';
+    h+='<div class="card">'+rec.rows.map(x=>'<div class="row"><div class="grow"><b>'+esc(x.name)+'</b><span>'+x.slot+(x.dose?' · '+esc(x.dose):'')+'</span></div><b>'+(x.taken?'Taken':'Missed')+'</b></div>').join('')+'</div>';
+    $('v-today').innerHTML=h;
+    if(role==='user')$('v-today').innerHTML+='<button class="ghost" id="reopen">Edit today\'s check-ins</button>';
+    if(role==='user')$('reopen').onclick=()=>{
+      delete data.records[k];
+      persist();
+      renderToday();
+    };
+    return;
+  }
+
+  const draft=data.drafts?.[k]||{};
+  for(const s of SLOTS){
+    const list=rows.filter(x=>x.slot===s);
+    if(!list.length)continue;
+    h+='<h2>'+s+'</h2><div class="card">'+list.map(x=>'<div class="row">'+
+      (role==='user'?'<label class="tick" style="font-weight:400"><input type="checkbox" data-k="'+x.id+'|'+s+'" '+(draft[x.id+'|'+s]?'checked':'')+'><span class="grow"><b>'+esc(x.name)+'</b>'+(x.dose?'<span>'+esc(x.dose)+'</span>':'')+'</span></label>':'<div class="grow"><b>'+esc(x.name)+'</b><span>'+(x.dose?esc(x.dose):'')+'</span></div><b>'+(draft[x.id+'|'+s]?'Taken':'Not yet')+'</b>')+
+      '</div>').join('')+'</div>';
+  }
+
+  if(role==='user')h+='<button id="submitDay" style="width:100%">Submit today\'s record</button><p class="sub">Unchecked tablets are recorded as not taken.</p>';
+  $('v-today').innerHTML=h;
+
+  if(role==='user'){
+    $('v-today').querySelectorAll('input[type=checkbox]').forEach(c=>c.onchange=()=>{
+      data.drafts[k]=data.drafts[k]||{};
+      if(c.checked)data.drafts[k][c.dataset.k]=true;
+      else delete data.drafts[k][c.dataset.k];
+      persist();
+    });
+    $('submitDay').onclick=()=>{
+      data.records[k]={submittedAt:Date.now(),rows:rows.map(r=>({...r,taken:!!draft[r.id+'|'+r.slot]}))};
+      delete data.drafts[k];
+      persist();
+      renderToday();
+    };
+  }
+}
+
+function renderMeds(){
+  if(role!=='user')return;
+  $('medList').innerHTML=(data.meds||[]).length?
+    data.meds.map(m=>'<div class="card row" style="flex-wrap:wrap"><div class="grow"><b>'+esc(m.name)+'</b><span>'+(m.dose?esc(m.dose)+' · ':'')+m.slots.join(', ')+'</span></div><button class="ghost small" data-edit="'+m.id+'">Edit</button><button class="danger small" data-del="'+m.id+'">Delete</button></div>').join(''):
+    '<div class="empty">No medications saved yet.</div>';
+}
+
+let editId=null;
+
+function resetForm(){
+  editId=null;
+  $('medForm').reset();
+  $('formTitle').textContent='Add a medication';
+  $('saveMed').textContent='Add medication';
+  $('cancelEdit').hidden=true;
+  $('medErr').textContent='';
+}
+
+$('cancelEdit').onclick=resetForm;
+
+$('medForm').onsubmit=e=>{
+  e.preventDefault();
+  const slots=SLOTS.filter(s=>document.querySelector('input[name=slot][value="'+s+'"]').checked);
+  if(!slots.length){
+    $('medErr').textContent='Choose at least one time.';
+    return;
+  }
+  const m={id:editId||Date.now().toString(36),name:$('mName').value.trim(),dose:$('mDose').value.trim(),slots};
+  if(editId)data.meds=data.meds.map(x=>x.id===editId?m:x);
+  else data.meds.push(m);
+  persist();
+  resetForm();
+  renderMeds();
+};
+
+$('medList').onclick=e=>{
+  const ed=e.target.dataset.edit,del=e.target.dataset.del;
+  if(ed){
+    const m=data.meds.find(x=>x.id===ed);
+    editId=ed;
+    $('mName').value=m.name;
+    $('mDose').value=m.dose;
+    document.querySelectorAll('input[name=slot]').forEach(c=>c.checked=m.slots.includes(c.value));
+    $('formTitle').textContent='Edit medication';
+    $('saveMed').textContent='Save changes';
+    $('cancelEdit').hidden=false;
+  }
+  if(del&&confirm('Delete this medication? Past records are kept.')){
+    data.meds=data.meds.filter(x=>x.id!==del);
+    persist();
+    renderMeds();
+  }
+};
+
+function renderHist(){
+  const keys=Object.keys(data.records||{}).sort().reverse();
+  $('dl').disabled=!keys.length;
+  $('histList').innerHTML=keys.length?
+    keys.map(k=>'<div class="card"><b>'+nice(k)+'</b>'+data.records[k].rows.map(x=>'<div class="row"><div class="grow"><b>'+esc(x.name)+'</b><span>'+x.slot+(x.dose?' · '+esc(x.dose):'')+'</span></div><b>'+(x.taken?'Taken':'Missed')+'</b></div>').join('')+'</div>').join(''):
+    '<div class="empty">No records yet.</div>';
+}
+
+$('dl').onclick=()=>{
+  const lines=['Date,Time of day,Medication,Dose,Taken'];
+  Object.keys(data.records||{}).sort().forEach(k=>data.records[k].rows.forEach(r=>
+    lines.push([k,r.slot,'"'+String(r.name).replace(/"/g,'""')+'"','"'+String(r.dose||'').replace(/"/g,'""')+'"',r.taken?'Yes':'No'].join(','))
+  ));
+  const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;
+  a.download='aarogya-records-'+dayKey()+'.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  $('dlMsg').textContent='CSV download started.';
+};
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {}));
+}
+</script>
+</body>
+</html>
